@@ -1,0 +1,92 @@
+<html>
+<head>
+	<title> Alert Page</title>
+</head>
+<body>
+	
+	<?php
+		
+		$client=$_POST['client'];
+		$vm=$_POST['vm'];
+		$timestamp=$_POST['timestamp'];	
+		$timestamp=str_replace("_", " ", $timestamp);
+		
+		echo "<h5>$client</h5>";
+		echo "<h5>$vm</h5>";
+		echo "<h5>$timestamp </h5>";
+		echo "<h5>getdb---1<\h5>";		
+		
+		function display($client1,$vm1,$timestamp1)
+		{
+			
+			echo "<h5>getdb---<\h5>";
+			$conn = new MongoClient("mongodb://localhost");
+			$db=getdb($vm1);	
+			$database=$conn->$db;
+			$cursor1=$database->processed_ps_aux->find();
+			echo "<h5>$db</h5>";
+			echo "<table><tr>
+                    <th>PID</th>
+                    <th>START</th>
+                    <th>USER</th>
+                    <th>COMMAND</th>
+                    <th>Max Running Time</th>
+                  </tr>";
+	   		 foreach ($cursor1 as $doc)
+	     	 {
+	      
+	      		echo "<tr>
+	                <td>".$doc["PID"]."</td>
+	                <td>".$doc["START"]."</td>
+	                <td>".$doc["USER"]."</td> 
+	                <td>".$doc["COMMAND"]."</td> 
+	                <td>".$doc["Max Running Time"]."</td>
+	            </tr>";
+	      
+	   		 }
+	    	 echo "</table>";
+  		}
+		
+		function getdb($vm1)
+		{
+			
+			echo "<h5>getdb---<\h5>";			
+			$conn = new MongoClient("mongodb://localhost");
+			$db = $conn->VmInfo; //localhost");
+			$table = $db->vminfo; 
+			
+			
+			
+			$arr=$table->find();
+			$mac="";
+			foreach ($arr as $key ) 
+			{
+				$nm=$key['VmName'];
+				#print $nm;
+				if(strcmp($nm,$vm1)==0)
+				{
+					$mac=$key['MAC'];
+				}	
+			}
+			$dbases = $conn->listDBs(); 
+			$name="";
+			foreach ($dbases['databases'] as $dbs) 
+			{
+			   
+			   	#print_r($dbs);
+			    $nm=$dbs['name'];
+			 	if(strpos($nm,$mac)!==FALSE)
+			    {
+			    	if(strpos($nm,"processed") !== FALSE)
+			    		$name=$nm;
+			    }
+			    
+			}
+			return $name;
+		}
+		display($client,$vm,$timestamp);
+
+	?>
+	<h5>this is alert page</h5>
+</body>
+</html>

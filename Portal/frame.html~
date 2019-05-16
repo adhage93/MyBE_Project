@@ -1,0 +1,13 @@
+<!DOCTYPE html> 
+<html>
+
+<frameset cols="25%,*"> 
+	<frameset rows="10%,30%,*">
+	   <frame src="title.html" name="frame0" noresize frameborder="1" scrolling="no" marginheight="20px">
+		<frame src="temp.php" name="frame1" noresize frameborder="1" scrolling="no"> 
+		<frame src="main.php" name="frame2" noresize frameborder="1" scrolling="no">
+	</frameset> 
+	<frame src="table.html" name="frame3" scrolling="auto" noresize> 
+</frameset>
+
+</html>
